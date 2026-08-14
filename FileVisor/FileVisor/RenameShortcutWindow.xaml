@@ -1,0 +1,59 @@
+﻿<Window x:Name="renameShortcutWindow" x:Class="FileVisor.RenameShortcutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileVisor"
+        mc:Ignorable="d"
+        Title="Переименование ярлыка" Icon="{StaticResource RenameIcon}" Height="176" Width="430" ResizeMode="CanMinimize" ShowInTaskbar="True" Topmost="True" WindowStartupLocation="CenterScreen" Closing="renameShortcutWindow_Closing" FontSize="16" WindowStyle="SingleBorderWindow" BorderThickness="1" BorderBrush="{StaticResource DarkBlueColorBrush}" RenderOptions.EdgeMode="Aliased" RenderOptions.ClearTypeHint="Enabled">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="40" ResizeBorderThickness="7" GlassFrameThickness="0" CornerRadius="5" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+    <Grid x:Name="wrapper" Style="{StaticResource LightPanel}">
+        <Grid x:Name="renameShortcutWindowGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <DockPanel x:Name="titleBar" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Style="{StaticResource LightPanel}" Focusable="False">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <Image Style="{StaticResource SmallIcon}" Source="{StaticResource RenameIcon}"/>
+                    <TextBlock x:Name="titleTextBlock" Style="{StaticResource TitleTextBlock}" Text="Переименование ярлыка"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <Button x:Name="closeButton" Grid.Column="1" Style="{StaticResource TitleBarCloseButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="closeButton_Click">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource CloseIcon}"/>
+                    </Button>
+                    <Button x:Name="restoreButton" Grid.Column="1" Style="{StaticResource TitleBarButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="restoreButton_Click" Visibility="Collapsed">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource RestoreIcon}"/>
+                    </Button>
+                    <Button x:Name="maximizeButton" Grid.Column="1" Style="{StaticResource TitleBarButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="maximizeButton_Click" Visibility="Visible" IsEnabled="False">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource MaximizeIcon}"/>
+                    </Button>
+                    <Button x:Name="minimizeButton" Grid.Column="1" Style="{StaticResource TitleBarButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="minimizeButton_Click">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource MinimizeIcon}"/>
+                    </Button>
+                </StackPanel>
+            </DockPanel>
+            <Grid x:Name="mainPanel" Grid.Row="1" Style="{StaticResource LightPanel}">
+                <StackPanel Orientation="Vertical" Margin="5 5 5 5">
+                    <TextBlock Text="Название:"/>
+                    <TextBox x:Name="nameTextBox" Template="{DynamicResource CustomTextBoxTemplate}"/>
+                </StackPanel>
+            </Grid>
+            <Grid x:Name="buttonPanel" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource LightPanel}" Focusable="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" x:Name="okButton" Style="{StaticResource TextButton}" HorizontalAlignment="Right" IsDefault="True" Click="okButton_Click">
+                    <TextBlock Text="ОК"/>
+                </Button>
+                <Button Grid.Column="1" x:Name="cancelButton" Style="{StaticResource TextButton}" HorizontalAlignment="Left" Click="cancelButton_Click">
+                    <TextBlock Text="Отмена"/>
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

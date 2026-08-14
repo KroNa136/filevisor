@@ -1,0 +1,397 @@
+﻿<Window x:Name="mainWindow" x:Class="FileVisor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileVisor"
+        xmlns:localmodels="clr-namespace:FileVisor.Models"
+        mc:Ignorable="d"
+        Title="FileVisor" Icon="{StaticResource Logo}" Height="720" Width="1280" SizeChanged="mainWindow_SizeChanged" StateChanged="mainWindow_StateChanged" Closing="mainWindow_Closing" FontSize="16" WindowStyle="SingleBorderWindow" RenderOptions.EdgeMode="Aliased" RenderOptions.ClearTypeHint="Enabled">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="40" ResizeBorderThickness="7" GlassFrameThickness="0" CornerRadius="5" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+    <Grid x:Name="wrapper" Style="{StaticResource LightPanel}">
+        <Grid x:Name="mainWindowGrid" Margin="7 4 7 7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="treeViewColumn" Width="200"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="112"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <DockPanel x:Name="titleBar" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Style="{StaticResource LightPanel}" Focusable="False">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <Image Style="{StaticResource SmallIcon}" Source="{StaticResource Logo}"/>
+                    <TextBlock x:Name="titleTextBlock" Style="{StaticResource TitleTextBlock}" Text="FileVisor"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <Button x:Name="closeButton" Grid.Column="1" Style="{StaticResource TitleBarCloseButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="closeButton_Click">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource CloseIcon}"/>
+                    </Button>
+                    <Button x:Name="restoreButton" Grid.Column="1" Style="{StaticResource TitleBarButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="restoreButton_Click" Visibility="Collapsed">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource RestoreIcon}"/>
+                    </Button>
+                    <Button x:Name="maximizeButton" Grid.Column="1" Style="{StaticResource TitleBarButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="maximizeButton_Click" Visibility="Visible">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource MaximizeIcon}"/>
+                    </Button>
+                    <Button x:Name="minimizeButton" Grid.Column="1" Style="{StaticResource TitleBarButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="minimizeButton_Click">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource MinimizeIcon}"/>
+                    </Button>
+                </StackPanel>
+            </DockPanel>
+            <StackPanel x:Name="menuPanel" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Style="{StaticResource LightPanel}" Orientation="Horizontal">
+                <Button x:Name="createButton" Style="{StaticResource LargeIconButton}" Click="createButton_Click" IsEnabled="False">
+                    <StackPanel Orientation="Vertical">
+                        <Image Style="{StaticResource LargeIcon}" Source="{StaticResource CreateIcon}"/>
+                        <TextBlock Text="Создать"/>
+                    </StackPanel>
+                </Button>
+                <StackPanel Style="{StaticResource SmallIconButtonContainer}">
+                    <Button x:Name="openButton" Style="{StaticResource SmallIconButton}" IsEnabled="False" Click="openButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="openButtonIcon" Style="{StaticResource SmallIcon}"/>
+                            <TextBlock Text="Открыть"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="editButton" Style="{StaticResource SmallIconButton}" IsEnabled="False" Click="editButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Style="{StaticResource SmallIcon}" Source="{StaticResource EditIcon}"/>
+                            <TextBlock Text="Изменить"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="propertiesButton" Style="{StaticResource SmallIconButton}" Click="propertiesButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Style="{StaticResource SmallIcon}" Source="{StaticResource PropertiesIcon}"/>
+                            <TextBlock Text="Свойства"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <Button x:Name="cutButton" Style="{StaticResource LargeIconButton}" IsEnabled="False" Click="cutButton_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Style="{StaticResource LargeIcon}" Source="{StaticResource CutIcon}"/>
+                        <TextBlock Text="Вырезать"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="copyButton" Style="{StaticResource LargeIconButton}" IsEnabled="False" Click="copyButton_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Style="{StaticResource LargeIcon}" Source="{StaticResource CopyIcon}"/>
+                        <TextBlock Text="Копировать"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="pasteButton" Style="{StaticResource LargeIconButton}" IsEnabled="False" Click="pasteButton_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Style="{StaticResource LargeIcon}" Source="{StaticResource PasteIcon}"/>
+                        <TextBlock Text="Вставить"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="renameButton" Style="{StaticResource LargeIconButton}" IsEnabled="False" Click="renameButton_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Style="{StaticResource LargeIcon}" Source="{StaticResource RenameIcon}"/>
+                        <TextBlock Text="Переименовать"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="deleteButton" Style="{StaticResource LargeIconButton}" IsEnabled="False" Click="deleteButton_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Style="{StaticResource LargeIcon}" Source="{StaticResource DeleteIcon}"/>
+                        <TextBlock Text="Удалить"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="copyPathButton" Style="{StaticResource LargeIconButton}" IsEnabled="False" Click="copyPathButton_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Style="{StaticResource LargeIcon}" Source="{StaticResource CopyPathIcon}"/>
+                        <TextBlock Text="Скопировать путь"/>
+                    </StackPanel>
+                </Button>
+                <StackPanel Style="{StaticResource SmallIconButtonContainer}">
+                    <Button x:Name="selectAllButton" Style="{StaticResource SmallIconButton}" Click="selectAllButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Style="{StaticResource SmallIcon}" Source="{StaticResource SelectAllIcon}"/>
+                            <TextBlock Text="Выделить всё"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="removeSelectionButton" Style="{StaticResource SmallIconButton}" Click="removeSelectionButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Style="{StaticResource SmallIcon}" Source="{StaticResource RemoveSelectionIcon}"/>
+                            <TextBlock Text="Отменить выделение"/>
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="invertSelectionButton" Style="{StaticResource SmallIconButton}" Click="invertSelectionButton_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Style="{StaticResource SmallIcon}" Source="{StaticResource InvertSelectionIcon}"/>
+                            <TextBlock Text="Обратить выделение"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <Button x:Name="settingsButton" Style="{StaticResource LargeIconButton}" HorizontalAlignment="Right" Click="settingsButton_Click">
+                    <StackPanel Orientation="Vertical">
+                        <Image Style="{StaticResource LargeIcon}" Source="{StaticResource SettingsIcon}"/>
+                        <TextBlock Text="Настройки"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+            <Grid x:Name="navigationPanel" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource LightPanel}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="36"/>
+                    <ColumnDefinition Width="36"/>
+                    <ColumnDefinition Width="36"/>
+                    <ColumnDefinition Width="36"/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="36"/>
+                    <!--
+                    <ColumnDefinition Width="304"/>
+                    <ColumnDefinition Width="36"/>
+                    -->
+                    <ColumnDefinition Width="6"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="goBackButton" Grid.Column="1" Style="{StaticResource SmallIconButton}" Click="goBackButton_Click" HorizontalAlignment="Center" IsEnabled="False">
+                    <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource BackIcon}"/>
+                </Button>
+                <Button x:Name="goForwardButton" Grid.Column="2" Style="{StaticResource SmallIconButton}" Click="goForwardButton_Click" HorizontalAlignment="Center" IsEnabled="False">
+                    <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource ForwardIcon}"/>
+                </Button>
+                <Button x:Name="goUpButton" Grid.Column="3" Style="{StaticResource SmallIconButton}" Click="goUpButton_Click" HorizontalAlignment="Center" IsEnabled="False">
+                    <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource UpIcon}"/>
+                </Button>
+                <Button x:Name="goHomeButton" Grid.Column="4" Style="{StaticResource SmallIconButton}" Click="goHomeButton_Click" HorizontalAlignment="Center">
+                    <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource HomeIcon}"/>
+                </Button>
+                <TextBox x:Name="pathTextBox" Template="{DynamicResource CustomTextBoxTemplate}" Grid.Column="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" UseLayoutRounding="False" MinWidth="300" PreviewKeyDown="pathTextBox_PreviewKeyDown"/>
+                <Button x:Name="refreshButton" Grid.Column="6" Style="{StaticResource SmallIconButton}" HorizontalAlignment="Center" Click="refreshButton_Click">
+                    <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource RefreshIcon}"/>
+                </Button>
+                <Button x:Name="goButton" Grid.Column="6" Style="{StaticResource SmallIconButton}" HorizontalAlignment="Center" Visibility="Collapsed" Click="goButton_Click">
+                    <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource GoIcon}"/>
+                </Button>
+                <!--
+                <TextBox x:Name="searchTextBox" Template="{DynamicResource CustomTextBoxTemplate}" Grid.Column="7" VerticalAlignment="Center" UseLayoutRounding="False" MinWidth="300" Width="300" HorizontalAlignment="Center" TextChanged="searchTextBox_TextChanged"/>
+                <Button x:Name="searchButton" Grid.Column="8" Style="{StaticResource SmallIconButton}" HorizontalAlignment="Center" Click="searchButton_Click">
+                    <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource SearchIcon}"/>
+                </Button>
+                -->
+            </Grid>
+            <TreeView x:Name="treeView" Grid.Column="0" Grid.Row="3" ItemsSource="{Binding TreeViewEntries}" SelectedItemChanged="treeView_SelectedItemChanged" MouseUp="treeView_MouseUp">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding ChildEntries}" DataType="{x:Type localmodels:FileSystemEntry}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Style="{StaticResource SmallIcon}" Source="{Binding Icon, Converter={StaticResource IconToImageConverter}}"/>
+                            <TextBlock Text="{Binding Name}" Style="{StaticResource InlineTextBlock}"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+            <Grid x:Name="mainPanel" Grid.Column="1" Grid.Row="3" Margin="4 0 0 0" Style="{StaticResource DarkPanel}" MouseLeftButtonDown="mainPanel_MouseLeftButtonDown" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.CanContentScroll="True">
+                <DataGrid x:Name="directoryContentDataGrid" ItemsSource="{Binding FileSystemEntries, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" GridLinesVisibility="None" HeadersVisibility="Column" CanUserAddRows="False" CanUserDeleteRows="False" CanUserResizeRows="False" IsReadOnly="True" ClipboardCopyMode="None" CanUserSortColumns="False" Foreground="White" SelectionChanged="directoryContentDataGrid_SelectionChanged" HorizontalAlignment="Left" VerticalAlignment="Top" PreviewKeyDown="directoryContentDataGrid_PreviewKeyDown">
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridRowStyle}">
+                            <EventSetter Event="MouseDoubleClick" Handler="directoryContentDataGrid_DataGridRow_MouseDoubleClick"/>
+                        </Style>
+                    </DataGrid.Resources>
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn x:Name="nameDataGridColumn" Header="Название">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Style="{StaticResource SmallIcon}" Opacity="{Binding IsCut, Converter={StaticResource IsCutToOpacityConverter}}" Source="{Binding Icon, Converter={StaticResource IconToImageConverter}}"/>
+                                        <TextBlock Text="{Binding Name}" Style="{StaticResource InlineTextBlock}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn x:Name="typeDataGridColumn" Header="Тип">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Type}" Style="{StaticResource InlineTextBlock}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn x:Name="dateCreatedDataGridColumn"  Header="Дата создания">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding DateCreated, Converter={StaticResource DateTimeToStringConverter}}" Style="{StaticResource InlineTextBlock}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn x:Name="dateModifiedDataGridColumn"  Header="Дата изменения">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding DateModified, Converter={StaticResource DateTimeToStringConverter}}" Style="{StaticResource InlineTextBlock}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn x:Name="sizeDataGridColumn" Header="Размер">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <TextBlock Text="{Binding ReadableSize}" Style="{StaticResource InlineTextBlock}"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <TextBlock x:Name="emptyDirectoryTextBlock" HorizontalAlignment="Center" Text="Эта папка пуста." VerticalAlignment="Center" Visibility="Collapsed"/>
+            </Grid>
+            <DockPanel x:Name="statusBar" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="4" Style="{StaticResource LightPanel}" Focusable="False">
+                <TextBlock x:Name="directoryInfoTextBlock" Text="Всего элементов: 50" HorizontalAlignment="Left"/>
+                <TextBlock x:Name="storageInfoTextBlock" Text="Локальный диск (C:) / 0,00 ГБ занято / 0,00 ГБ свободно" HorizontalAlignment="Right"/>
+            </DockPanel>
+            <GridSplitter x:Name="treeViewGridSplitter" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Stretch" ResizeDirection="Columns" DragDelta="treeViewGridSplitter_DragDelta"/>
+        </Grid>
+    </Grid>
+    <Window.Resources>
+        <!--
+        Ctrl + N                Новое окно (с этим же расположением)
+    
+        Alt + Стрелка влево	    Назад
+        Backspace		        Назад
+        Alt + Стрелка вправо	Вперёд
+        Alt + Стрелка вверх     На уровень вверх
+        Alt + Home		        Открыть "Этот компьютер"
+        F4			            Фокус на pathTextBox
+        F5			            Обновить
+    
+        Ctrl + Shift + N	    Создать
+        Enter			        Открыть
+        Ctrl + E	        	Изменить
+        Alt + Enter	        	Свойства
+        Ctrl + X	        	Вырезать
+        Ctrl + C	        	Копировать
+        Ctrl + V	        	Вставить
+        F2		            	Переименовать
+        Ctrl + D		        Удалить
+        Del		            	Удалить
+        Shift + Del		        Удалить безвозвратно
+        Ctrl + A	        	Выделить всё
+        Ctrl + Shift + A	    Отменить выделение
+        -->
+        <RoutedUICommand x:Key="OpenNewWindowCommand" Text="Новое окно">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+N</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="GoBackCommand" Text="Назад">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Alt+Left</KeyGesture>
+                <KeyGesture>Backspace</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="GoForwardCommand" Text="Вперёд">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Alt+Right</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="GoUpCommand" Text="На уровень вверх">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Alt+Up</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="GoHomeCommand" Text="Домой">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Alt+Home</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="EnterPathCommand" Text="Задать расположение...">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>F4</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="RefreshCommand" Text="Обновить">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>F5</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="CreateCommand" Text="Создать">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+Shift+N</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="OpenCommand" Text="Открыть">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Enter</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="EditCommand" Text="Изменить">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+E</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="OpenPropertiesCommand" Text="Свойства">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Alt+Enter</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="CutCommand" Text="Вырезать">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+X</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="CopyCommand" Text="Копировать">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+C</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="PasteCommand" Text="Вставить">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+V</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="RenameCommand" Text="Переименовать">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>F2</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="DeleteCommand" Text="Удалить">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+D</KeyGesture>
+                <KeyGesture>Del</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="DeletePermanentlyCommand" Text="Удалить безвозвратно">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Shift+Del</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="SelectAllCommand" Text="Выделить всё">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+A</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+        <RoutedUICommand x:Key="RemoveSelectionCommand" Text="Отменить выделение">
+            <RoutedUICommand.InputGestures>
+                <KeyGesture>Ctrl+Shift+A</KeyGesture>
+            </RoutedUICommand.InputGestures>
+        </RoutedUICommand>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource OpenNewWindowCommand}" Executed="OpenNewWindowCommand_Executed"/>
+        <CommandBinding Command="{StaticResource GoBackCommand}" Executed="GoBackCommand_Executed"/>
+        <CommandBinding Command="{StaticResource GoForwardCommand}" Executed="GoForwardCommand_Executed"/>
+        <CommandBinding Command="{StaticResource GoUpCommand}" Executed="GoUpCommand_Executed"/>
+        <CommandBinding Command="{StaticResource GoHomeCommand}" Executed="GoHomeCommand_Executed"/>
+        <CommandBinding Command="{StaticResource EnterPathCommand}" Executed="EnterPathCommand_Executed"/>
+        <CommandBinding Command="{StaticResource RefreshCommand}" Executed="RefreshCommand_Executed"/>
+        <CommandBinding Command="{StaticResource CreateCommand}" Executed="CreateCommand_Executed"/>
+        <CommandBinding Command="{StaticResource OpenCommand}" Executed="OpenCommand_Executed"/>
+        <CommandBinding Command="{StaticResource EditCommand}" Executed="EditCommand_Executed"/>
+        <CommandBinding Command="{StaticResource OpenPropertiesCommand}" Executed="OpenPropertiesCommand_Executed"/>
+        <CommandBinding Command="{StaticResource CutCommand}" Executed="CutCommand_Executed"/>
+        <CommandBinding Command="{StaticResource CopyCommand}" Executed="CopyCommand_Executed"/>
+        <CommandBinding Command="{StaticResource PasteCommand}" Executed="PasteCommand_Executed"/>
+        <CommandBinding Command="{StaticResource RenameCommand}" Executed="RenameCommand_Executed"/>
+        <CommandBinding Command="{StaticResource DeleteCommand}" Executed="DeleteCommand_Executed"/>
+        <CommandBinding Command="{StaticResource DeletePermanentlyCommand}" Executed="DeletePermanentlyCommand_Executed"/>
+        <CommandBinding Command="{StaticResource SelectAllCommand}" Executed="SelectAllCommand_Executed"/>
+        <CommandBinding Command="{StaticResource RemoveSelectionCommand}" Executed="RemoveSelectionCommand_Executed"/>
+    </Window.CommandBindings>
+</Window>

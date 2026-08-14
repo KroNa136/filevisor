@@ -1,0 +1,121 @@
+﻿<Window x:Name="dialogWindow" x:Class="FileVisor.CustomDialogBox.DialogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileVisor"
+        mc:Ignorable="d"
+        Title="Сообщение" Icon="{StaticResource Logo}" Height="Auto" Width="480" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" ShowInTaskbar="False" Topmost="True" SizeToContent="Height" IsVisibleChanged="dialogWindow_IsVisibleChanged" FontSize="16" WindowStyle="SingleBorderWindow" BorderThickness="1" BorderBrush="{StaticResource DarkBlueColorBrush}" RenderOptions.EdgeMode="Aliased" RenderOptions.ClearTypeHint="Enabled">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="40" ResizeBorderThickness="7" GlassFrameThickness="0" CornerRadius="5" UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+    <Grid x:Name="wrapper" Style="{StaticResource LightPanel}">
+        <Grid x:Name="dialogWindowGrid" Style="{StaticResource LightPanel}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <DockPanel x:Name="titleBar" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Style="{StaticResource LightPanel}" Focusable="False">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal">
+                    <Image Style="{StaticResource SmallIcon}" Source="{StaticResource Logo}"/>
+                    <TextBlock x:Name="titleTextBlock" Style="{StaticResource TitleTextBlock}" Text="Сообщение"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <Button x:Name="closeButton" Grid.Column="1" Style="{StaticResource TitleBarCloseButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="closeButton_Click">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource CloseIcon}"/>
+                    </Button>
+                    <Button x:Name="restoreButton" Grid.Column="1" Style="{StaticResource TitleBarButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="restoreButton_Click" Visibility="Collapsed" IsEnabled="False">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource RestoreIcon}"/>
+                    </Button>
+                    <Button x:Name="maximizeButton" Grid.Column="1" Style="{StaticResource TitleBarButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="maximizeButton_Click" Visibility="Collapsed" IsEnabled="False">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource MaximizeIcon}"/>
+                    </Button>
+                    <Button x:Name="minimizeButton" Grid.Column="1" Style="{StaticResource TitleBarButton}" WindowChrome.IsHitTestVisibleInChrome="True" Click="minimizeButton_Click" Visibility="Collapsed" IsEnabled="False">
+                        <Image Style="{StaticResource SmallIconWithoutLabel}" Source="{StaticResource MinimizeIcon}"/>
+                    </Button>
+                </StackPanel>
+            </DockPanel>
+            <Grid x:Name="messageMainPanel" Grid.Row="1" Style="{StaticResource LightPanel}" Visibility="Visible">
+                <Grid VerticalAlignment="Center" Margin="5 5 5 5">
+                    <TextBlock x:Name="messageMainPanel_textBlock" Style="{StaticResource InlineTextBlock}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="Auto" Height="Auto" TextWrapping="Wrap"/>
+                </Grid>
+            </Grid>
+            <Grid x:Name="questionMainPanel" Grid.Row="1" Style="{StaticResource LightPanel}" Visibility="Collapsed">
+                <Grid VerticalAlignment="Center" Margin="5 5 5 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Style="{StaticResource LargeIcon}" Source="{StaticResource QuestionIcon}" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="questionMainPanel_textBlock" Grid.Column="1" Style="{StaticResource InlineTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="Auto" TextWrapping="Wrap"/>
+                </Grid>
+            </Grid>
+            <Grid x:Name="warningMainPanel" Grid.Row="1" Style="{StaticResource LightPanel}" Visibility="Collapsed">
+                <Grid VerticalAlignment="Center" Margin="5 5 5 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Style="{StaticResource LargeIcon}" Source="{StaticResource WarningIcon}" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="warningMainPanel_textBlock" Grid.Column="1" Style="{StaticResource InlineTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="Auto" TextWrapping="Wrap"/>
+                </Grid>
+            </Grid>
+            <Grid x:Name="errorMainPanel" Grid.Row="1" Style="{StaticResource LightPanel}" Visibility="Collapsed">
+                <Grid VerticalAlignment="Center" Margin="5 5 5 5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Image Grid.Column="0" Style="{StaticResource LargeIcon}" Source="{StaticResource ErrorIcon}" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="errorMainPanel_textBlock" Grid.Column="1" Style="{StaticResource InlineTextBlock}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="Auto" Height="Auto" TextWrapping="Wrap"/>
+                </Grid>
+            </Grid>
+            <Grid x:Name="okButtonPanel" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource LightPanel}" Focusable="False" Visibility="Visible">
+                <Button x:Name="okButtonPanel_okButton" Style="{StaticResource TextButton}" HorizontalAlignment="Center" IsDefault="True" Click="okButton_Click">
+                    <TextBlock Text="ОК"/>
+                </Button>
+            </Grid>
+            <Grid x:Name="okCancelButtonPanel" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource LightPanel}" Focusable="False" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="okCancelButtonPanel_okButton" Grid.Column="0" Style="{StaticResource TextButton}" HorizontalAlignment="Right" IsDefault="True" Click="okButton_Click">
+                    <TextBlock Text="ОК"/>
+                </Button>
+                <Button x:Name="okCancelButtonPanel_cancelButton" Grid.Column="1" Style="{StaticResource TextButton}" HorizontalAlignment="Left" Click="cancelButton_Click">
+                    <TextBlock Text="Отмена"/>
+                </Button>
+            </Grid>
+            <Grid x:Name="yesNoButtonPanel" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource LightPanel}" Focusable="False" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="yesNoButtonPanel_yesButton" Grid.Column="0" Style="{StaticResource TextButton}" HorizontalAlignment="Right" IsDefault="True" Click="yesButton_Click">
+                    <TextBlock Text="Да"/>
+                </Button>
+                <Button x:Name="yesNoButtonPanel_noButton" Grid.Column="1" Style="{StaticResource TextButton}" HorizontalAlignment="Left" Click="noButton_Click">
+                    <TextBlock Text="Нет"/>
+                </Button>
+            </Grid>
+            <Grid x:Name="yesNoCancelButtonPanel" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Style="{StaticResource LightPanel}" Focusable="False" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="yesNoCancelButtonPanel_yesButton" Grid.Column="0" Style="{StaticResource TextButton}" HorizontalAlignment="Right" IsDefault="True" Click="yesButton_Click">
+                    <TextBlock Text="Да"/>
+                </Button>
+                <Button x:Name="yesNoCancelButtonPanel_noButton" Grid.Column="1" Style="{StaticResource TextButton}" HorizontalAlignment="Center" Click="noButton_Click">
+                    <TextBlock Text="Нет"/>
+                </Button>
+                <Button x:Name="yesNoCancelButtonPanel_cancelButton" Grid.Column="2" Style="{StaticResource TextButton}" HorizontalAlignment="Left" Click="cancelButton_Click">
+                    <TextBlock Text="Отмена"/>
+                </Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
